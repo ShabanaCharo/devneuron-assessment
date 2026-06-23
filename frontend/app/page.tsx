@@ -2,14 +2,15 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
   const [epsilon, setEpsilon] = useState(0.1);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
     setImage(file);
     setPreview(URL.createObjectURL(file));
     setResult(null);
@@ -21,7 +22,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("file", image);
-    formData.append("epsilon", epsilon);
+    formData.append("epsilon", String(epsilon));
 
     try {
       const response = await fetch("http://127.0.0.1:8000/attack", {
@@ -39,7 +40,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-950 text-white p-8">
-      {/* Header */}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-2 text-purple-400">
           FGSM Adversarial Attack
@@ -48,7 +48,6 @@ export default function Home() {
           Fast Gradient Sign Method — DevNeuron Assessment
         </p>
 
-        {/* Upload + Controls */}
         <div className="bg-gray-900 rounded-2xl p-6 mb-8 border border-gray-800">
           <h2 className="text-xl font-semibold mb-4 text-purple-300">
             Upload Image
@@ -91,14 +90,12 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Results */}
         {result && (
           <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
             <h2 className="text-xl font-semibold mb-6 text-purple-300">
               Attack Results
             </h2>
 
-            {/* Status banner */}
             <div className={`rounded-xl p-4 mb-6 text-center text-lg font-bold ${
               result.attack_success
                 ? "bg-red-900 border border-red-500 text-red-300"
@@ -109,7 +106,6 @@ export default function Home() {
                 : "Attack Failed — Model held strong!"}
             </div>
 
-            {/* Predictions */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-gray-800 rounded-xl p-4 text-center">
                 <p className="text-gray-400 text-sm mb-1">Clean Prediction</p>
@@ -125,7 +121,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Images side by side */}
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <p className="text-gray-400 text-sm mb-2">Original Image</p>
