@@ -25,7 +25,7 @@ export default function Home() {
     formData.append("epsilon", String(epsilon));
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/attack", {
+      const response = await fetch("https://fgsm-backend-6hn4.onrender.com/attack", {
         method: "POST",
         body: formData,
       });
